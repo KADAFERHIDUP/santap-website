@@ -36,7 +36,7 @@ Website ini statis (HTML, CSS, JavaScript tanpa framework). Karena memakai ES mo
 - VS Code: klik kanan `index.html` → *Open with Live Server*, atau
 - terminal: `python -m http.server 8000`, lalu buka http://localhost:8000
 
-Untuk online, upload ke GitHub lalu aktifkan GitHub Pages (branch `main`, folder root).
+Online di **https://santap.kadaferhidup.my.id** (GitHub Pages, branch `main`, folder root; domain diatur lewat file `CNAME`).
 
 ## Struktur
 
