@@ -102,7 +102,6 @@ ul, ol { list-style: none; padding: 0; }
 
 .hero-plate { position: relative; display: grid; place-items: center; min-height: 440px; }
 .plate { position: relative; width: clamp(300px, 31vw, 460px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: #2a2a2a; box-shadow: 0 50px 70px -30px rgba(0, 0, 0, .55), 0 0 0 10px rgba(255, 255, 255, .04); transform: translateX(-6%); }
-.plate img { width: 100%; height: 100%; object-fit: cover; }
 .plate.swap { animation: plate-in .9s var(--ease); }
 @keyframes plate-in { from { opacity: 0; transform: translateX(-6%) rotate(-28deg) scale(.92); } }
 .dot { position: absolute; border-radius: 50%; }
@@ -134,7 +133,7 @@ ul, ol { list-style: none; padding: 0; }
 .coupon-nav button:first-child { color: var(--mute-dark); }
 .coupon-nav svg { width: 14px; height: 14px; }
 .coupon-body { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 16px; padding: 16px 22px; }
-.coupon-body img { width: 78px; height: 78px; border-radius: 50%; object-fit: cover; box-shadow: 0 10px 18px -8px rgba(0, 0, 0, .8); }
+.coupon-body .thumb { width: 78px; height: 78px; box-shadow: 0 0 0 4px rgba(255, 255, 255, .08), 0 10px 18px -8px rgba(0, 0, 0, .8); }
 .coupon-body h3 { font-size: 19px; font-weight: 400; line-height: 1.2; }
 .coupon-body .mins { display: inline-flex; align-items: center; gap: 6px; color: var(--mute-dark); font-size: 13px; margin-top: 4px; }
 .coupon-body .mins svg { width: 15px; height: 15px; color: var(--yellow); }
@@ -146,6 +145,13 @@ ul, ol { list-style: none; padding: 0; }
 .coupon-body.swap > *:nth-child(2) { animation-delay: .04s; }
 .coupon-body.swap > *:nth-child(3) { animation-delay: .08s; }
 @keyframes fade-in { from { opacity: 0; transform: translateX(10px); } }
+
+/* ---------------------------------------------------------------- foto hidangan dalam lingkaran */
+.pic { display: block; position: relative; border-radius: 50%; overflow: hidden; background: #f1f1f1; flex: none; }
+.pic img, .plate img { width: 100%; height: 100%; object-fit: cover; transform: scale(var(--z, 1)); transform-origin: var(--x, 50%) var(--y, 50%); }
+.pic.cut, .plate.cut { border-radius: 0; overflow: visible; background: none; box-shadow: none !important; }
+.pic.cut img, .plate.cut img { object-fit: contain; transform: none; filter: drop-shadow(0 18px 18px rgba(0, 0, 0, .35)); }
+.thumb { width: 64px; height: 64px; }
 
 /* ---------------------------------------------------------------- menu */
 .menu-sec { padding: 120px 0 110px; }
@@ -161,13 +167,12 @@ ul, ol { list-style: none; padding: 0; }
 .chip[aria-selected="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
 .chip small { font-size: 12px; opacity: .65; }
 .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(262px, 1fr)); gap: 22px; }
-.dish-card { position: relative; display: flex; flex-direction: column; padding: 20px 20px 18px; border-radius: var(--r-lg); border: 1.5px solid var(--line); background: #fff; transition: border-color .25s, box-shadow .25s, transform .25s var(--ease); }
+.dish-card { position: relative; display: flex; flex-direction: column; padding: 16px 20px 18px; border-radius: var(--r-lg); border: 1.5px solid var(--line); background: #fff; transition: border-color .25s, box-shadow .25s, transform .25s var(--ease); }
 .dish-card:hover { border-color: transparent; box-shadow: var(--shadow); transform: translateY(-3px); }
 .dish-open { display: block; text-align: left; width: 100%; }
-.dish-photo { width: 150px; aspect-ratio: 1; margin: 6px auto 18px; border-radius: 50%; overflow: hidden; background: var(--soft); box-shadow: 0 22px 30px -18px rgba(0, 0, 0, .55); transition: transform .5s var(--ease); }
+.dish-photo { width: 150px; height: 150px; margin: 4px auto 20px; box-shadow: 0 0 0 6px #fff, 0 0 0 7px var(--line), 0 24px 30px -16px rgba(0, 0, 0, .45); transition: transform .5s var(--ease); }
 .dish-card:hover .dish-photo { transform: rotate(-8deg) scale(1.04); }
-.dish-photo img { width: 100%; height: 100%; object-fit: cover; }
-.tags { position: absolute; top: 16px; left: 16px; display: flex; gap: 6px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; min-height: 26px; margin-bottom: 6px; }
 .tag { display: inline-flex; align-items: center; gap: 4px; height: 26px; padding: 0 10px; border-radius: 999px; font-size: 12px; font-weight: 600; background: var(--soft); }
 .tag svg { width: 13px; height: 13px; }
 .tag.pedas { color: var(--red); background: #fdeeec; }
@@ -178,6 +183,7 @@ ul, ol { list-style: none; padding: 0; }
 .dish-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding-top: 16px; }
 .price { display: grid; font-size: 20px; font-weight: 500; line-height: 1.15; }
 .price s { font-size: 12.5px; color: #767676; font-weight: 400; }
+.price s.ph { visibility: hidden; }
 .add { display: inline-flex; align-items: center; gap: 6px; height: 44px; padding: 0 16px 0 6px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 14px; font-weight: 500; transition: transform .2s var(--ease); }
 .add:active { transform: scale(.95); }
 .add i { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--yellow); color: var(--ink); }
@@ -278,7 +284,7 @@ dialog::backdrop { background: rgba(10, 10, 10, .5); backdrop-filter: blur(3px);
 .buy-full { width: 100%; height: 62px; font-size: 17px; }
 .cart-list { display: grid; gap: 14px; }
 .cart-item { display: grid; grid-template-columns: 64px 1fr auto; gap: 14px; align-items: center; }
-.cart-item img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background: var(--soft); }
+.cart-item .thumb { box-shadow: 0 0 0 3px #fff, 0 0 0 4px var(--line); }
 .cart-item h3 { font-size: 15.5px; font-weight: 600; line-height: 1.25; }
 .cart-item p { color: var(--mute); font-size: 14px; }
 .cart-item .stepper { height: 38px; }
@@ -295,7 +301,7 @@ dialog::backdrop { background: rgba(10, 10, 10, .5); backdrop-filter: blur(3px);
 
 .dish .sheet-in { overflow-y: auto; }
 .dish-hero { position: relative; padding: 70px 26px 10px; display: grid; place-items: center; background: var(--ink); clip-path: polygon(0 0, 100% 0, 100% 78%, 0 100%); padding-bottom: 60px; }
-.dish-hero img { width: min(300px, 70vw); aspect-ratio: 1; border-radius: 50%; object-fit: cover; box-shadow: 0 30px 40px -20px rgba(0, 0, 0, .8); }
+.dish-hero .big { width: min(300px, 70vw); height: min(300px, 70vw); box-shadow: 0 0 0 8px rgba(255, 255, 255, .06), 0 30px 40px -20px rgba(0, 0, 0, .8); }
 .dish-hero .round-btn { position: absolute; top: 16px; right: 16px; color: #fff; }
 .dish-info { padding: 6px 26px 26px; display: grid; gap: 14px; }
 .dish-info h2 { font-size: 28px; font-weight: 600; line-height: 1.15; }
@@ -315,7 +321,7 @@ dialog::backdrop { background: rgba(10, 10, 10, .5); backdrop-filter: blur(3px);
 
 /* foto yang gagal dimuat */
 .no-photo { display: grid; place-items: center; background: var(--yellow) !important; }
-.no-photo img { width: 46%; height: 46%; object-fit: contain; opacity: .55; }
+.no-photo img { width: 46%; height: 46%; margin: auto; object-fit: contain; opacity: .55; transform: none; }
 
 /* ---------------------------------------------------------------- responsive */
 @media (max-width: 1180px) {
@@ -369,15 +375,15 @@ dialog::backdrop { background: rgba(10, 10, 10, .5); backdrop-filter: blur(3px);
   .coupon-head { padding: 14px 18px; }
   .coupon-nav button span, .coupon-nav .txt { display: none; }
   .coupon-body { grid-template-columns: auto 1fr auto; padding: 16px 18px; gap: 14px; }
-  .coupon-body img { width: 62px; height: 62px; }
+  .coupon-body .thumb { width: 62px; height: 62px; }
   .coupon-body h3 { font-size: 17px; }
   .coupon-price { font-size: 21px; }
   .coupon-add { grid-column: 1 / -1; justify-content: center; height: 46px; }
   .menu-sec, .steps-sec, .catering, .about, .contact { padding: 80px 0; }
   .menu-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
   .dish-card { padding: 14px 12px 12px; border-radius: var(--r-md); }
-  .dish-photo { width: 104px; margin-bottom: 12px; }
-  .tags { top: 10px; left: 10px; }
+  .dish-photo { width: 104px; height: 104px; margin-bottom: 14px; box-shadow: 0 0 0 4px #fff, 0 0 0 5px var(--line), 0 16px 22px -14px rgba(0, 0, 0, .45); }
+  .tags { min-height: 22px; margin-bottom: 4px; }
   .tag { height: 22px; padding: 0 7px; font-size: 11px; }
   .tag .lbl { display: none; }
   .dish-card h3 { font-size: 15.5px; }

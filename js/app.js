@@ -10,6 +10,11 @@ const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const imgAt = (src, w) => /images\.unsplash\.com/.test(src) ? `${src}&auto=format&fit=crop&w=${w}&h=${w}&q=72` : src;
 const utm = u => `${u}${u.includes('?') ? '&' : '?'}utm_source=santap&utm_medium=referral`;
 const waUrl = text => `https://wa.me/${SHOP.whatsapp}?text=${encodeURIComponent(text)}`;
+// foto hidangan: potongan PNG lokal kalau ada, kalau tidak foto Unsplash yang dibingkai di lingkaran
+const frameOf = m => { const [z, x, y] = m.frame || [1, 50, 50]; return `--z:${z};--x:${x}%;--y:${y}%`; };
+const pic = (m, w, { alt = '', cls = 'pic', attrs = '' } = {}) => m.cutout
+  ? `<span class="${cls} cut"><img src="${esc(m.cutout)}" alt="${esc(alt)}" ${attrs}></span>`
+  : `<span class="${cls}" style="${frameOf(m)}"><img src="${esc(imgAt(m.img, w))}" alt="${esc(alt)}" ${attrs}></span>`;
 const ICON = (id, cls = '') => `<svg class="${cls}"><use href="#i-${id}"/></svg>`;
 
 let toastT = 0;
@@ -108,10 +113,13 @@ function showHero(i, animate) {
   $('#hero-was').textContent = d.was ? rp(d.was) : '';
   $('#hero-was').hidden = !d.was;
   const img = $('#hero-img');
+  const plate = $('#hero-plate');
   delete img.dataset.failed;
-  img.parentElement.classList.remove('no-photo');
-  img.src = imgAt(d.img, 1100);
-  img.srcset = `${imgAt(d.img, 640)} 640w, ${imgAt(d.img, 1100)} 1100w`;
+  plate.classList.remove('no-photo');
+  plate.classList.toggle('cut', !!d.cutout);
+  plate.setAttribute('style', d.cutout ? '' : frameOf(d));
+  img.src = d.cutout || imgAt(d.img, 1100);
+  img.srcset = d.cutout ? '' : `${imgAt(d.img, 640)} 640w, ${imgAt(d.img, 1100)} 1100w`;
   img.sizes = '(max-width: 980px) 78vw, 36vw';
   img.alt = d.name;
   $$('#hero-dots button').forEach((b, k) => b.setAttribute('aria-current', String(k === i)));
@@ -129,7 +137,7 @@ function showPromo(i) {
   promoIdx = (i + PROMO.length) % PROMO.length;
   const d = byId(PROMO[promoIdx]);
   const box = $('#promo');
-  box.innerHTML = `<img src="${esc(imgAt(d.img, 200))}" alt="" width="78" height="78">
+  box.innerHTML = `${pic(d, 220, { cls: 'pic thumb' })}
     <div><h3>${esc(d.name)}</h3><span class="mins">${ICON('clock')} ± ${d.mins} menit</span></div>
     <p class="coupon-price"><s>${rp(d.was)}</s>${rp(d.price)}</p>
     <button type="button" class="coupon-add" data-add="${d.id}" aria-label="Tambah ${esc(d.name)} ke keranjang">${ICON('plus')} Tambah</button>`;
@@ -154,6 +162,7 @@ function setCat(id) {
   $$('.chip').forEach(c => c.setAttribute('aria-selected', String(c.dataset.cat === id)));
   renderMenu();
 }
+const wasOf = m => m.was ? `<s>${rp(m.was)}</s>` : '<s class="ph" aria-hidden="true">&nbsp;</s>';
 function tagsOf(m) {
   const t = [];
   if (m.was) t.push(`<span class="tag promo">Promo</span>`);
@@ -174,10 +183,10 @@ function renderMenu() {
   $('#menu-grid').innerHTML = list.map(m => `<article class="dish-card" data-id="${m.id}">
       <div class="tags">${tagsOf(m)}</div>
       <button type="button" class="dish-open" data-open="${m.id}" aria-label="Lihat detail ${esc(m.name)}">
-        <div class="dish-photo"><img src="${esc(imgAt(m.img, 400))}" alt="${esc(m.name)}" loading="lazy" width="150" height="150"></div>
+        ${pic(m, 420, { alt: m.name, cls: 'pic dish-photo', attrs: 'loading="lazy" width="150" height="150"' })}
         <h3>${esc(m.name)}</h3><p>${esc(m.desc)}</p>
       </button>
-      <div class="dish-foot"><p class="price">${m.was ? `<s>${rp(m.was)}</s>` : ''}${rp(m.price)}</p><span class="buy-slot">${buyControl(m.id, m.name)}</span></div>
+      <div class="dish-foot"><p class="price">${wasOf(m)}${rp(m.price)}</p><span class="buy-slot">${buyControl(m.id, m.name)}</span></div>
     </article>`).join('');
   $('#menu-empty').hidden = list.length > 0;
 }
@@ -220,7 +229,7 @@ function renderCart() {
   $('#cart-total').textContent = rp(total());
   $('#cart-list').innerHTML = [...cart].map(([id, q]) => {
     const m = byId(id);
-    return `<li class="cart-item"><img src="${esc(imgAt(m.img, 160))}" alt="" width="64" height="64">
+    return `<li class="cart-item">${pic(m, 160, { cls: 'pic thumb' })}
       <div><h3>${esc(m.name)}</h3><p>${rp(m.price)} × ${q} = ${rp(m.price * q)}</p></div>
       <div class="stepper" role="group" aria-label="Jumlah ${esc(m.name)}">
         <button type="button" data-dec="${id}" aria-label="Kurangi ${esc(m.name)}">${ICON('minus')}</button><output>${q}</output>
@@ -273,13 +282,13 @@ function openDish(id) {
   $('#dish-body').innerHTML = `
     <div class="dish-hero">
       <button type="button" class="round-btn" data-close aria-label="Tutup">${ICON('x')}</button>
-      <img src="${esc(imgAt(m.img, 700))}" alt="${esc(m.name)}" width="300" height="300">
+      ${pic(m, 700, { alt: m.name, cls: 'pic big' })}
     </div>
     <div class="dish-info">
       <div class="dish-meta">${tagsOf(m)}<span class="tag">${ICON('clock')} ± ${m.mins} menit</span></div>
       <h2 id="dish-title">${esc(m.name)}</h2>
       <p>${esc(m.desc)}</p>
-      <div class="dish-buy"><p class="price">${m.was ? `<s>${rp(m.was)}</s>` : ''}${rp(m.price)}</p><span class="buy-slot" data-id="${m.id}">${buyControl(m.id, m.name)}</span></div>
+      <div class="dish-buy"><p class="price">${wasOf(m)}${rp(m.price)}</p><span class="buy-slot" data-id="${m.id}">${buyControl(m.id, m.name)}</span></div>
       <p class="photo-credit">Foto: <a href="${esc(utm(m.creditUrl))}" target="_blank" rel="noopener">${esc(m.credit)}</a> di <a href="${esc(utm('https://unsplash.com'))}" target="_blank" rel="noopener">Unsplash</a></p>
     </div>`;
   openSheet($('#dish'));

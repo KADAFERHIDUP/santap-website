@@ -27,6 +27,10 @@ Harga, jam buka, dan isi katering adalah **data contoh**. Sesuaikan sebelum dipa
 
 Foto makanan berasal dari [Unsplash](https://unsplash.com) ([Unsplash License](https://unsplash.com/license), boleh dipakai gratis untuk usaha). Sesuai aturan Unsplash, foto dimuat langsung dari server Unsplash (butuh internet), dan nama fotografernya tampil di panel detail menu dan di bagian *Kredit foto* di footer. Kalau foto gagal dimuat, yang tampil ikon piring di latar kuning.
 
+Setiap foto dibingkai lewat `frame: [zoom, x%, y%]` supaya piringnya memenuhi lingkaran.
+
+**Foto tanpa background:** simpan PNG transparan di `img/menu/` lalu tambahkan `cutout: 'img/menu/nama.png'` di hidangannya. Foto itu tampil tanpa lingkaran, dengan bayangan lembut. PNG transparan bisa dibuat dengan remove.bg atau Canva Pro.
+
 Untuk usaha sungguhan, ganti dengan foto masakan sendiri: simpan di folder `img/`, lalu ubah `img` di `js/data.js` menjadi misalnya `'img/nasi-goreng.webp'`.
 
 ## Menjalankan
